@@ -1,0 +1,42 @@
+
+Encrypted Client-Server Communication Framework
+Test Report
+
+Date:
+Python version:
+
+1. TLS connection:
+Result: PASS
+Observation: Successful TLS connection established.
+
+2. Successful login:
+Result: PASS
+Observation: Successful login at entering correct username and password.
+
+3. Incorrect password:
+Result: PASS
+Observation: Denied access on entering incorrect credentials.
+
+4. Secure messaging:
+Result: PASS
+Observation: Server successfully recerived message sent by client.
+
+5. File transfer:
+Result: PASS
+Observation: Server successfully recerived file sent by client.
+
+6. SHA-256 integrity verification:
+Original hash: c2ff2b7478d44fd8e7d6b2f28f9b945f7add6692854e728d9b60e063eda247f5
+Received hash: c2ff2b7478d44fd8e7d6b2f28f9b945f7add6692854e728d9b60e063eda247f5
+Result: PASS
+
+7. Logout:
+Result: PASS
+Observation: Successful logout on typing /logout
+
+=== Performance Test Results ===
+Successful message exchanges: 20
+Average round-trip latency: 0.201 ms
+Median round-trip latency:  0.193 ms
+Minimum latency:            0.122 ms
+Maximum latency:            0.321 ms

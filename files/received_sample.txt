@@ -1,0 +1,2 @@
+This is a sample file for the Encrypted Client-Server Communication Framework.
+The server will verify this file using SHA-256.
