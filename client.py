@@ -13,7 +13,7 @@ from pathlib import Path
 # =========================
 
 HOST = "127.0.0.1"
-PORT = 5000
+PORT = 5001
 
 MAX_MESSAGE_SIZE = 1024 * 1024       # 1 MB
 MAX_FILE_SIZE = 50 * 1024 * 1024     # 50 MB

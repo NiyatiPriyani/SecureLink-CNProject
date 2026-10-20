@@ -15,7 +15,7 @@ from pathlib import Path
 # =========================
 
 HOST = "127.0.0.1"
-PORT = 5000
+PORT = 5001
 
 USERS = {
     "user1": "1234",

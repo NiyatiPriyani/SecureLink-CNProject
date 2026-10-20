@@ -1,0 +1,702 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureLink | Secure File Transfer</title>
+
+    <style>
+        :root {
+            --background: #0b1120;
+            --card: #131e30;
+            --card-light: #101a2b;
+            --border: #29364b;
+            --text: #edf2f7;
+            --muted: #94a3b8;
+            --accent: #5eead4;
+            --success: #4ade80;
+            --error: #fb7185;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: 750;
+            letter-spacing: -0.7px;
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .connection {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            background: #fbbf24;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot.online { background: var(--success); }
+        .dot.offline { background: var(--error); }
+
+        main {
+            max-width: 1120px;
+            margin: 55px auto;
+            padding: 0 24px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: clamp(34px, 5vw, 52px);
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 18px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            line-height: 1.8;
+            max-width: 650px;
+            font-size: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 22px;
+            margin-top: 40px;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            min-width: 0;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 27px;
+            min-width: 0;
+        }
+
+        .card-heading {
+            font-size: 19px;
+            font-weight: 650;
+            margin-bottom: 9px;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .field {
+            margin-top: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #34445d;
+            border-radius: 8px;
+            background: var(--card-light);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+        }
+
+        .dropzone {
+            margin-top: 24px;
+            padding: 35px 20px;
+            text-align: center;
+            border: 1px dashed #4b647b;
+            border-radius: 13px;
+            background: var(--card-light);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .dropzone.dragging {
+            border-color: var(--accent);
+            background: #172d3a;
+        }
+
+        .file-icon {
+            display: grid;
+            place-items: center;
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 16px;
+            border-radius: 16px;
+            background: #20354a;
+            color: var(--accent);
+            font-size: 30px;
+        }
+
+        .drop-title {
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        input[type="file"]::file-selector-button {
+            border: 1px solid #42516a;
+            border-radius: 7px;
+            background: #25334a;
+            color: var(--text);
+            padding: 9px 12px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 19px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 9px;
+            background: var(--accent);
+            color: #0b1120;
+            font-size: 14px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #99f6e4;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .secondary {
+            background: #25334a;
+            color: var(--text);
+        }
+
+        .secondary:hover:not(:disabled) {
+            background: #34445d;
+        }
+
+        .message {
+            margin-top: 18px;
+            padding: 13px;
+            border-radius: 9px;
+            background: var(--card-light);
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .message.success {
+            border: 1px solid #285d4a;
+            color: #a7f3d0;
+        }
+
+        .message.error {
+            border: 1px solid #713747;
+            color: #fecdd3;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .info-row:first-of-type {
+            margin-top: 14px;
+        }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+            padding-bottom: 3px;
+        }
+
+        .info-row > span { color: var(--muted); }
+
+        .info-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+            font-weight: 600;
+        }
+
+        .status-value { color: var(--accent); }
+
+        .history-list { margin-top: 12px; }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .history-name {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .history-result {
+            color: var(--muted);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .empty-history {
+            color: var(--muted);
+            padding: 17px 0 0;
+            font-size: 13px;
+        }
+
+        .security-note {
+            margin-top: 22px;
+            padding: 16px 18px;
+            border: 1px solid #34445d;
+            border-radius: 12px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .security-note strong { color: var(--text); }
+
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        @media (max-width: 760px) {
+            header { padding: 20px 6%; }
+            .brand { font-size: 21px; }
+            .connection { font-size: 11px; }
+            main { margin-top: 38px; }
+            .grid { grid-template-columns: 1fr; }
+            .card { padding: 22px; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="brand">Secure<span>Link</span></div>
+    <div class="connection">
+        <span class="dot" id="connectionDot"></span>
+        <span id="connectionText">Checking server...</span>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <p class="eyebrow">Computer Networks Project</p>
+        <h1>Transfer files.<br>Keep them secure.</h1>
+        <p class="subtitle">
+            Secure file transfer with TLS-encrypted communication,
+            resumable uploads, and SHA-256 file-integrity verification.
+        </p>
+    </section>
+
+    <section class="grid">
+        <div class="card">
+            <h2 class="card-heading">Send a file</h2>
+            <p class="muted">
+                Sign in to your TCP/TLS server and securely transfer a file.
+            </p>
+
+            <div class="field">
+                <label for="username">Server username</label>
+                <input
+                    id="username"
+                    type="text"
+                    autocomplete="username"
+                    placeholder="Enter your username"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="password">Server password</label>
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="file-icon">↑</div>
+                <p class="drop-title">Choose a file to get started</p>
+                <p class="muted">
+                    Select a file or drag it into this area.
+                </p>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    aria-label="Choose a file to upload"
+                >
+                <p class="muted" id="fileDetails">Maximum file size: 50 MB</p>
+            </div>
+
+            <button id="uploadButton" type="button">
+                Secure Upload
+            </button>
+
+            <div id="message" class="message" role="status" aria-live="polite">
+                Enter your server credentials and select a file.
+            </div>
+
+            <div class="security-note">
+                <strong>How it works</strong><br>
+                Your browser sends the file to Flask. Flask authenticates
+                with the TCP/TLS server, transfers the file using the
+                resumable chunk protocol, and displays the server's
+                SHA-256 verification result.
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="card">
+                <h2 class="card-heading">Connection status</h2>
+                <p class="muted">Status of your local services.</p>
+
+                <div class="info-row">
+                    <span>Flask application</span>
+                    <strong id="webStatus" class="status-value">Checking...</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>TCP/TLS server</span>
+                    <strong id="tcpStatus">Not tested</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>TLS connection</span>
+                    <strong id="tlsStatus">Not tested</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>File integrity</span>
+                    <strong id="integrityStatus">Not tested</strong>
+                </div>
+
+                <button class="secondary" id="refreshButton" type="button">
+                    Refresh Web Status
+                </button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-heading">Recent activity</h2>
+                <p class="muted">Events from this browser session.</p>
+
+                <div class="history-list" id="history">
+                    <p class="empty-history" id="emptyHistory">No activity yet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>SecureLink · Local development prototype</footer>
+
+<script>
+    const fileInput = document.getElementById("fileInput");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const uploadButton = document.getElementById("uploadButton");
+    const refreshButton = document.getElementById("refreshButton");
+    const message = document.getElementById("message");
+    const dropzone = document.getElementById("dropzone");
+
+    const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    }
+
+    function showMessage(text, type = "") {
+        message.textContent = text;
+        message.className = "message";
+        if (type) message.classList.add(type);
+    }
+
+    function setStatus(id, value, color) {
+        const element = document.getElementById(id);
+        element.textContent = value;
+        element.style.color = color || "";
+    }
+
+    function addHistory(action, result) {
+        const history = document.getElementById("history");
+        const empty = document.getElementById("emptyHistory");
+
+        if (empty) empty.remove();
+
+        const item = document.createElement("div");
+        item.className = "history-item";
+
+        const name = document.createElement("span");
+        name.className = "history-name";
+        name.textContent = action;
+
+        const status = document.createElement("span");
+        status.className = "history-result";
+        status.textContent = result;
+
+        item.append(name, status);
+        history.prepend(item);
+    }
+
+    function displaySelectedFile(file) {
+        const details = document.getElementById("fileDetails");
+
+        if (!file) {
+            details.textContent = "Maximum file size: 50 MB";
+            return;
+        }
+
+        details.textContent = `${file.name} · ${formatSize(file.size)}`;
+
+        if (file.size > MAX_FILE_SIZE) {
+            showMessage("The selected file exceeds the 50 MB limit.", "error");
+            return;
+        }
+
+        showMessage(`Selected: ${file.name}\nSize: ${formatSize(file.size)}\nReady for secure upload.`);
+    }
+
+    fileInput.addEventListener("change", () => {
+        displaySelectedFile(fileInput.files[0]);
+    });
+
+    async function uploadFile() {
+        const file = fileInput.files[0];
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!username || !password) {
+            showMessage("Enter your TCP/TLS server username and password.", "error");
+            return;
+        }
+
+        if (!file) {
+            showMessage("Please select a file first.", "error");
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            showMessage("The selected file exceeds the 50 MB limit.", "error");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("username", username);
+        formData.append("password", password);
+
+        uploadButton.disabled = true;
+        refreshButton.disabled = true;
+        uploadButton.textContent = "Uploading securely...";
+
+        setStatus("tcpStatus", "Connecting...", "#fbbf24");
+        setStatus("tlsStatus", "Connecting...", "#fbbf24");
+        setStatus("integrityStatus", "Pending", "#fbbf24");
+
+        showMessage(
+            "Connecting to the TCP/TLS server...\n" +
+            "Uploading and verifying the file. Please keep this page open."
+        );
+
+        try {
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Upload failed.");
+            }
+
+            setStatus("tcpStatus", "Connected", "#4ade80");
+            setStatus("tlsStatus", "TLS verified", "#4ade80");
+            setStatus("integrityStatus", "SHA-256 verified", "#4ade80");
+
+            showMessage(
+                `UPLOAD SUCCESSFUL\n\n` +
+                `Filename: ${data.filename}\n` +
+                `Size: ${formatSize(data.size_bytes)}\n\n` +
+                `Client SHA-256:\n${data.sha256}\n\n` +
+                `Server SHA-256:\n${data.server_sha256}\n\n` +
+                `${data.message}`,
+                "success"
+            );
+
+            addHistory(file.name, "Verified");
+        } catch (error) {
+            setStatus("tcpStatus", "Not confirmed", "#fb7185");
+            setStatus("tlsStatus", "Not confirmed", "#fb7185");
+            setStatus("integrityStatus", "Not verified", "#fb7185");
+
+            showMessage("Upload failed: " + error.message, "error");
+            addHistory(file.name, "Failed");
+        } finally {
+            uploadButton.disabled = false;
+            refreshButton.disabled = false;
+            uploadButton.textContent = "Secure Upload";
+        }
+    }
+
+    uploadButton.addEventListener("click", uploadFile);
+
+    // Drag-and-drop support.
+    dropzone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropzone.classList.add("dragging");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+        dropzone.classList.remove("dragging");
+    });
+
+    dropzone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropzone.classList.remove("dragging");
+
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+            fileInput.files = files;
+            displaySelectedFile(files[0]);
+        }
+    });
+
+    // This checks Flask only, not the TCP/TLS service.
+    async function checkWebStatus() {
+        const connectionText = document.getElementById("connectionText");
+        const connectionDot = document.getElementById("connectionDot");
+        const webStatus = document.getElementById("webStatus");
+
+        connectionText.textContent = "Checking web app...";
+        connectionDot.className = "dot";
+
+        try {
+            const response = await fetch("/api/health");
+
+            if (!response.ok) throw new Error("Health check failed");
+
+            const data = await response.json();
+
+            connectionText.textContent = "Web app online";
+            connectionDot.className = "dot online";
+            webStatus.textContent = "Online";
+
+            return data;
+        } catch (error) {
+            connectionText.textContent = "Web app unavailable";
+            connectionDot.className = "dot offline";
+            webStatus.textContent = "Offline";
+            throw error;
+        }
+    }
+
+    refreshButton.addEventListener("click", async () => {
+        refreshButton.disabled = true;
+
+        try {
+            await checkWebStatus();
+            addHistory("Flask health check", "Online");
+        } catch (error) {
+            addHistory("Flask health check", "Offline");
+        } finally {
+            refreshButton.disabled = false;
+        }
+    });
+
+    checkWebStatus().catch(() => {});
+</script>
+</body>
+</html>

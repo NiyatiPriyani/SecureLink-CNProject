@@ -4,3 +4,8 @@ __pycache__/
 venv/
 .env
 certs/server.key
+
+.venv-1/
+*.py[cod]
+.env.*
+files/
